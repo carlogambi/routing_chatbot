@@ -36,6 +36,7 @@ class InputSection extends StatelessWidget {
       case 'chips':
         child = Container(
           height: 50,
+          width: 300,
           decoration: new BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.all(Radius.circular(10)),
@@ -51,10 +52,10 @@ class InputSection extends StatelessWidget {
               )
             ],
           ),
-          margin: EdgeInsets.only(bottom: 9),
+          margin: EdgeInsets.only(bottom: 12),
+          padding: EdgeInsets.only(left: 12),
           child: ListTile(
               title: Text(currentOption["label"]),
-              leading: FlutterLogo(),
               onTap: () {
                 handleSubmit(currentOption["id"], currentOption["label"]);
               }),

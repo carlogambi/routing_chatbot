@@ -49,7 +49,9 @@ class ChatMessages extends StatelessWidget {
   List<Widget> botMessage() {
     return <Widget>[
       Avatar(
-          name: this.name, textColor: Colors.black, background: Colors.white),
+          name: this.name,
+          textColor: (botAvatarConfig['color'])!,
+          background: (botAvatarConfig['background'])!),
       Expanded(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -67,13 +69,7 @@ class ChatMessages extends StatelessWidget {
       Expanded(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.end,
-          children: <Widget>[
-            // Text(this.name,
-            //     style: TextStyle(
-            //         backgroundColor: Colors.blue[50],
-            //         fontWeight: FontWeight.bold)),
-            messageContainer()
-          ],
+          children: <Widget>[messageContainer()],
         ),
       ),
       Avatar(

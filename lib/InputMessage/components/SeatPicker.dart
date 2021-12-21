@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:math';
 
 class SeatPicker extends StatefulWidget {
-  SeatPicker({Key? key, required this.handleSubmit}) : super(key: key);
+  SeatPicker({required this.handleSubmit});
 
   final Function handleSubmit;
 
@@ -40,10 +40,10 @@ class _SeatPickerState extends State<SeatPicker> {
         Legend(),
         SizedBox(height: 25),
         SizedBox(
-          height: 25,
+          height: 30,
           width: double.infinity,
           child: Center(
-            child: Text('Selected seat: ${selectedSeat.toString()}',
+            child: Text('Selected seat: ${(selectedSeat + 1).toString()}',
                 style: TextStyle(
                     fontSize: 25,
                     color: Colors.black45,
@@ -52,7 +52,7 @@ class _SeatPickerState extends State<SeatPicker> {
         ),
         SizedBox(height: 25),
         SizedBox(
-            height: 240,
+            height: 200,
             child: GridView.builder(
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 7,
@@ -72,19 +72,16 @@ class _SeatPickerState extends State<SeatPicker> {
                     },
                     child: Container(
                       alignment: Alignment.center,
-                      child: Text(locationSeats[index]["id"] == selectedSeat
-                          ? locationSeats[index]["name"]
-                          : ''),
+                      child: Text(locationSeats[index]["name"]),
                       decoration: BoxDecoration(
-                        color: locationSeats[index]["id"] == selectedSeat
-                            ? Colors.amber
-                            : locationSeats[index]["isEmptySpace"]
-                                ? Colors.grey[100]
-                                : locationSeats[index]["isAvailable"]
-                                    ? Colors.blue[100]
-                                    : Colors.grey,
-                        borderRadius: BorderRadius.circular(10),
-                      ),
+                          color: locationSeats[index]["id"] == selectedSeat
+                              ? Colors.amber
+                              : locationSeats[index]["isEmptySpace"]
+                                  ? Colors.grey[100]
+                                  : locationSeats[index]["isAvailable"]
+                                      ? Colors.blue[100]
+                                      : Colors.grey,
+                          borderRadius: BorderRadius.circular(10)),
                     ),
                   );
                 })),
@@ -95,11 +92,9 @@ class _SeatPickerState extends State<SeatPicker> {
           height: 50,
           width: double.infinity,
           child: ElevatedButton(
-            child: Text('Selected seat: ${selectedSeat.toString()}'),
-            onPressed: () => {
-              widget.handleSubmit(selectedSeat.toString(),
-                  "Selected seat: ${selectedSeat.toString()}")
-            },
+            child: Text('Selected seat: ${(selectedSeat + 1).toString()}'),
+            onPressed: () => widget.handleSubmit(selectedSeat.toString(),
+                "Selected seat: ${selectedSeat.toString()}"),
           ),
         ),
         SizedBox(
@@ -111,8 +106,6 @@ class _SeatPickerState extends State<SeatPicker> {
 }
 
 class Legend extends StatelessWidget {
-  const Legend({Key? key}) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -123,7 +116,7 @@ class Legend extends StatelessWidget {
           text: 'selected',
         ),
         LegendItem(
-          color: Colors.blue[100]!,
+          color: (Colors.blue[100])!,
           text: 'available',
         ),
         LegendItem(
@@ -146,12 +139,11 @@ class LegendItem extends StatelessWidget {
     return Row(
       children: [
         Container(
-          height: 15.0,
-          width: 15.0,
-          margin: EdgeInsets.only(right: 8.0),
-          decoration: BoxDecoration(
-              color: color, borderRadius: BorderRadius.circular(4)),
-        ),
+            height: 15.0,
+            width: 15.0,
+            margin: EdgeInsets.only(right: 8.0),
+            decoration: BoxDecoration(
+                color: color, borderRadius: BorderRadius.circular(4))),
         Text(text)
       ],
     );

@@ -59,6 +59,7 @@ class _HomePageDialogflow extends State<HomePageDialogflow> {
   bool _navigationPopupOpen = false;
   List _optionsList = [];
   Map collectedData = {};
+  String partialResponse = '';
 
   void resetState() {
     setState(() {
@@ -67,6 +68,7 @@ class _HomePageDialogflow extends State<HomePageDialogflow> {
       _optionsList = [];
       collectedData = {};
       intentId = '';
+      partialResponse = '';
       _key = GlobalKey();
     });
     return sendQueryToDialogFlow('hi');
@@ -96,13 +98,16 @@ class _HomePageDialogflow extends State<HomePageDialogflow> {
     if (aiResponse.getListMessage().length > 1) {
       final type = aiResponse.getListMessage()[1]["payload"]["type"];
       final optionsList =
-          aiResponse.getListMessage()[1]["payload"]["listValues"];
+          aiResponse.getListMessage()[1]["payload"]["listValues"] ?? [];
       final intro = aiResponse.getListMessage()[1]["payload"]["intro"];
+      final fixedResponse =
+          aiResponse.getListMessage()[1]["payload"]["partialResponse"] ?? "";
 
       setState(() {
         _inputType = type;
         _optionsList = optionsList;
         introText = intro;
+        partialResponse = fixedResponse;
       });
     }
 
@@ -145,21 +150,26 @@ class _HomePageDialogflow extends State<HomePageDialogflow> {
     );
   }
 
-  void handleSubmit(String textForDialogFlow, [String textMessage = '']) {
+  void handleSubmit(String textForDialogFlow,
+      [String textMessage = 'defaultValueToOmit']) {
     if (textForDialogFlow == "directions") {
       // setState(() {
       //   _navigationPopupOpen = true;
       // });
       var lat = spindoxLocations[collectedData['workplace']][0];
       var long = spindoxLocations[collectedData['workplace']][1];
-      print(collectedData['workplace']);
       MapsLauncher.launchCoordinates(
           lat, long, 'spindox office in ${collectedData['workplace']}');
     }
     if (textForDialogFlow.isEmpty && textMessage == '')
       return print('empty message');
+
+    var partial = partialResponse.isNotEmpty ? partialResponse : "";
+    var text =
+        textMessage != 'defaultValueToOmit' ? textMessage : textForDialogFlow;
+
     ChatMessages message = ChatMessages(
-      message: textMessage != '' ? textForDialogFlow : '',
+      message: partial + text,
       name: "User",
       isUserMessage: true,
     );
@@ -184,13 +194,6 @@ class _HomePageDialogflow extends State<HomePageDialogflow> {
 
   @override
   Widget build(BuildContext context) {
-    if (this.introText == 'Recap' &&
-        this._optionsList != null &&
-        this._optionsList.length == 0) {
-      Map<String, dynamic> msg =
-          json.decode('{"id": "Milano", "label": "Milano"}');
-      this._optionsList.add(msg);
-    }
     return Scaffold(
       backgroundColor: Colors.blue[50],
       appBar: AppBar(
@@ -235,10 +238,9 @@ class _HomePageDialogflow extends State<HomePageDialogflow> {
                 DraggableScrollableSheet(
                   maxChildSize: 0.7,
                   initialChildSize: 0.5,
-                  minChildSize: 0.2,
+                  minChildSize: 0.3,
                   builder: (BuildContext context,
                       ScrollController scrollController) {
-                    print(_optionsList);
                     return SingleChildScrollView(
                         physics: ClampingScrollPhysics(),
                         controller: scrollController,
@@ -274,7 +276,7 @@ class _HomePageDialogflow extends State<HomePageDialogflow> {
                                         SizedBox(height: 18),
                                         Column(
                                           children: (this._inputType.isNotEmpty)
-                                              ? _optionsList != null
+                                              ? _optionsList.length > 0
                                                   ? this
                                                       ._optionsList
                                                       .map((currentOption) => InputSection(
